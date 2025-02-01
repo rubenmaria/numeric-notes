@@ -1,0 +1,737 @@
+\documentclass{report}
+
+\input{preamble}
+\input{macros}
+\input{letterfonts}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[german]{babel}
+\usepackage{amsmath, amssymb}
+
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages} 
+\usepackage{transparent}
+
+\title{\Huge{Numeric}}
+\author{\huge{Ruben Triwari}}
+\date{}
+
+\begin{document}
+
+\maketitle
+\newpage% or \cleardoublepage
+\pdfbookmark[section]{\contentsname}{toc}
+\tableofcontents
+\pagebreak
+\chapter{Normen und Konditionszahl}
+\simplebox{Matrixnormen} {
+  Sei $A \in \mathbb{K}^{N\times N}$ beliebig.\\
+  Die Spaltensummennorm ist die maximale Summe 
+  der Spalten einer Matrix.
+  \[
+    ||A||_1 = \max_{n = 1,2,\dots, N} \sum_{m=1}^{N} |a_{m,n}|
+  \]
+  Die Zeilensummennorm ist die maximale Summe 
+  der Zeilen einer Matrix.
+  \[
+    ||A||_{\infty} =
+    \max_{n = 1,2,\dots, N} \sum_{m=1}^{N} |a_{n, m}|
+  \]
+  Die Frobeniusnorm ist die Wurzel der Quadratsumme über alle 
+  Einträge einer Matrix.
+  \[
+  ||A||_F = \sqrt{\sum_{m=1}^{N}\sum_{n=1}^{N}|a_{n,m}|^2}
+          = \sum_{n=1}^{N} \sqrt{\lambda_n(A^*A)}
+  \]
+  Die zweite Gleichheit gilt, da
+  \[
+    \texttt{spur}(A^*A) 
+      = \sum_{n=1}^{N}\sum_{m=1}^{N} \overline{a_{n,m}} a_{n,m}
+      = \sum_{n=1}^{N}\sum_{m=1}^{N} |a_{n,m}|^2
+      = ||A||_F^2
+  \]
+  Spektralnorm:
+  \[
+      ||A||_2 = \max_{n = 1,2,\dots, N} \sqrt{\lambda_n(A^*A)}
+  \]
+
+}
+\simplebox{Induzierte Matrixnorm} {
+  Sei $||\cdot||$ eine Norm auf $\mathbb{K}^N$, dann ist 
+  die induzierte Matrixnorm:
+  \[
+    ||A|| = \sup_{0 \neq x \in \mathbb{K}^N} \frac{||Ax||}{||x||}
+          = \sup_{||x|| = 1} ||Ax||.
+  \]
+  Es gilt die Submultiplikativität:
+  \[
+    ||A\cdot B|| \leq ||A||\cdot ||B||.
+  \]
+  Sowie:
+  \[
+    ||\mathbb{1}|| = \sup_{||x|| = 1} ||\mathbb{1}x||
+                   = \sup_{||x|| = 1} ||x|| = 1.
+  \]
+  Wichtige induzierte Matrixnomen:
+  \[
+    ||x||_1 \leftrightarrow ||A||_1 
+  \]
+  \[
+    ||x||_\infty \leftrightarrow ||A||_\infty
+  \]
+  \[
+    ||x||_2  \leftrightarrow 
+    ||A||_2 
+  \]
+}
+
+\simplebox{Konditionszahl} {
+  Die Konditionszahl ist der Fehlerverstärker
+  falls eine Störung in
+  einer regulären Matrix
+  $A \in \mathbb{K}^{N\times N}$ in einen 
+  linearen Gleichungssystem vorkommt.
+  Sei $||\cdot||$ eine Matrixnorm, dann setze:
+  \[
+    \texttt{cond}(A) = ||A||\cdot ||A^{-1}||.
+  \]
+  Es gilt $\forall \alpha \in \mathbb{K}\setminus \{0\}$: 
+  \[ 
+    \texttt{cond}(\alpha A) = ||\alpha A|| \cdot ||(\alpha A)^{-1}||
+    = |\alpha \cdot \alpha^{-1}| \cdot ||A|| \cdot ||A^{-1}||
+    = \texttt{cond}(A) 
+  \]
+  Falls $||\cdot||$ eine induzierte Matrixnorm ist, gilt wegen Submultiplikativit:
+  \[
+    \texttt{cond}(A) = ||A||\cdot ||A^{-1}|| \ge ||A\cdot A^{-1}|| = 1
+  \]
+  Außerdem für eine induzierte Matrixnorm:
+  \[
+    \texttt{cond}(A) 
+      = \frac{\sup_{||x||=1}||Ax||}{\inf_{||x||=1} ||Ax||}
+  \]
+  Daraus folgt für die Spektralnorm:
+  \[
+    \texttt{cond}(A) 
+    = \sqrt{\frac{\max_{n}\lambda_n(A^*A)}{\min_{n}\lambda_n(A^*A)}}
+  \]
+}
+
+
+\simplebox{Fehlerabschätzungen für lineare Gleichungssysteme} {
+  Sei $A, \Delta A \in \mathbb{K}^{N \times N}$ und 
+  $b, \Delta b, x, \Delta x \in \mathbb{K}^N$.\\
+  Mit $Ax = b$ und $A(x + \Delta x) = b + \Delta b$ gilt dann:
+  \[
+    ||\Delta x || \leq ||A^{-1}||\cdot ||\Delta b|| 
+    \hspace{0.5cm} \text{und} \hspace{0.5cm}
+    \frac{||\Delta x ||}{||x||} 
+      \leq \texttt{cond}(A) \frac{||\Delta b||}{||b||}
+  \]
+  Dies motiviert die Konditionszahl. \\
+  Falls nun $||\Delta A|| < \frac{1}{||A^{-1}||}$ gilt 
+  dann $A + \Delta A$ regulär, mit
+  \[
+    ||(A+\Delta A)^{-1}|| 
+      \leq ||A^{-1}|| \frac{1}{1- ||\Delta A||\cdot ||A^{-1}||}
+  \]
+  Daraus erhält man falls weiter 
+    $||\Delta A|| < \frac{1}{||A^{-1}||}$ gilt und mit
+  \[
+    (A+\Delta A)(x + \Delta x) = b + \Delta b.
+  \]
+  \[
+    \frac{||\Delta x||}{||x||} \leq \texttt{cond}(A) 
+      \frac{1}{1- ||\Delta A||\cdot ||A^{-1}||}
+      (\frac{\Delta A}{A} + \frac{\Delta b}{b})
+  \]
+}
+
+\simplebox{Strikt diagonaldominante Matrizen} {
+  Sei $A \in \mathbb{K}^{N\times N}$ dann heißt die 
+  Matrix strikt diagonaldominant, wenn für alle $n = 1, 2, \hdots, N$ gilt: 
+  \[
+    \sum_{m=1}^N |a_{n,m}| < |a_{n,n}|
+  \]
+  Eigenschaften falls A strikt diagonaldominant: 
+  \begin{itemize}
+    \item A regulär
+    \item So ist bei andwendung der L-R Zerlegung 
+      $a_{n,n}^{(n)} \neq 0$ $\forall n$
+    \item Die Pivoelementsuche liefert immer $a_{n,n}^{(n)}$
+  \end{itemize}
+}
+
+\simplebox{LR-Zerlegung}{
+  Sei $y=
+    \begin{pmatrix} y_1 \\ y_2 \\ \vdots \\ y_N\end{pmatrix} 
+    \in \mathbb{K}^N$ ein Vektor,  $n \in \{1,2, \dots, N\}$ 
+    mit $y_n \neq 0$
+    und setze 
+    \[
+      l_n :=
+    \begin{pmatrix}
+      0 \\
+      \vdots \\
+      0 \\ 
+      \frac{y_{n+1}}{y_n} \\
+      \vdots \\
+      \frac{y_{N}}{y_n}
+    \end{pmatrix}.
+    \]
+    Wobei die ersten $n$ Einträge null sind.
+    Daraus erhält man die Matrix:
+    \[
+      L_n := E_n - l_n\cdot e_n^* =
+      \begin{pmatrix}
+        1  &   &  & &   \\
+        &  \ddots &  &\\
+        &  &  1 &  & & \\
+        &  &  \frac{-y_{n+1}}{y_n} & 1 & & \\
+        &  &  \vdots & & \ddots & \\
+        &  &  \frac{-y_{N}}{y_n} & &  & 1&
+      \end{pmatrix}
+    \]
+    Die $y$ Einträge befinden sich in der n-ten Spalte 
+    und in den $(n+1)-N$ Zeilen.\\
+    Diese Matrix hat folgende Eigenschaften:
+    \[
+      L_ny = \begin{pmatrix} y_1 \\ \vdots \\ y_n \\ 0 \\ \vdots \\ 0\end{pmatrix}
+      \hspace{0.5cm}\text{und} \hspace{0.5cm}
+      L_n e_m = e_m \text{ für } m \neq n 
+    \]
+    Sei A eine beliebige Matrix mit $y = A_n$, dann setze:
+    \[
+      R := L_{N-1}\cdots L_2L_1A 
+      \hspace{0.5cm}\text{und} \hspace{0.5cm}
+      L := L_1^{-1}L_2^{-1}\cdots L_{N-1}^{-1}
+    \]
+    Dann sind L und R Dreiecksmatritzen und für L gilt:
+    \[
+      L = E_n + l_1e_1^* + l_2e_2^* + \cdots + l_{N-1}e_{N-1}^*
+    \]
+    Jetzt kann das LGS einfach mit L und R gelöst werden:
+    \[
+      Ax = L(Rx) = b \\ 
+      \iff Lz = b \hspace{0.3cm}\text{und}\hspace{0.3cm} Rx = z
+    \]
+    Dieser Algorithmus verwendet folgende Anzahl an Schritten:
+    \[
+      \texttt{Rechenaufwand} = \frac{1}{3}N^3 - \frac{1}{3}N
+    \]
+}
+\simplebox{Pivotsuche}{
+  Idee: Falls das Pivoelement bei der 
+  LR-Zerlegung $a_{n,n}^{(n)} = 0$ ist, tauschen 
+  wir die Zeilen oder Spalten um ein Pivotelemnt
+  $a_{n,n}^{(n)} \neq 0$  erhalten.\\
+  Die Vertauschungen können mittels einer 
+  Permutationsmatrix durchgeführt werden:
+  \begin{center}
+    \includegraphics[scale=0.3]{permutation.png}
+  \end{center}
+  Die Matrix heißt elementare Permutationsmatrix und 
+  hat folgende Eigenschaften: 
+  \begin{itemize}
+    \item $A\cdot P_n$ vertauscht n-te und p-te Zeile von A
+    \item $P_n\cdot A$ vertauscht n-te und p-te Spalte von A
+    \item $P^2_n = E_n$
+  \end{itemize}
+  Der n-te Schritt mit Pivotsuche ist daher:
+  \[
+    A^{(n+1)} = L_nP_nA^{(n)}
+  \]
+  Dann gilt für R und L:
+  \[
+    R := \tilde{L}_{N-1}\tilde{L}_{N-2}\cdots \tilde{L}_1PA 
+      \hspace{0.5cm}\text{und} \hspace{0.5cm}
+      L := \tilde{L}_{1}^{-1}\tilde{L}_{2}^{-1}\cdots
+      \tilde{L}_{N-1}^{-1}
+  \]
+  mit 
+  \[
+    \tilde{L}_n := P_{N-1}\cdots P_{n+1}L_n P_{n+1} \cdots P_{N-1}
+  \]
+  Also gilt wieder: 
+  \[
+    PA = LR 
+      \hspace{0.5cm}\text{dann läst man wieder} \hspace{0.5cm}
+      Ly = Pb 
+      \hspace{0.5cm}\text{und} \hspace{0.5cm}
+      Rx = y
+  \]
+  Spaltenpivotsuche:\\
+  Das m-te Pivotelement mit dem höchsten Score wird gewählt mit 
+  der Sapltenmaximierungstrategie:
+  \[
+    \texttt{Pivoelement-Zeile} = 
+    \texttt{argmax}_{n=m,\dots,N} = 
+    \frac{|a_{n,m}|}{\sum_{l=m}^{N} = |a_{n,l}|}
+  \]
+}
+
+\simplebox{LR-Zerlegung Algorithmus}{
+  Algorithmus:
+  \begin{enumerate}
+    \item Start: $A^{(1)} := A$, $L^{(1)} := 0$, $P^{(1)} := E_N$
+    \item Pivotsuche ergibt neues Element: 
+        Vertausche Zeilen von $A^{(n)}$, also berechne: \\
+          $A'^{(n)} := P_{n,j}A^{(n)}$,
+          $P^{(n)} :=  P_{n,j}P^{(n-1)}$
+    \item Pivotsuche gibt kein neues Element:
+          $P^{(n)} := P^{(n-1)}$
+    \item Berechne: 
+      $l_n := \begin{pmatrix}
+      0 \\ \vdots \\
+      0 \\ \frac{a^{(n)}_{n+1,n}}{a^{(n)}_{n,n}} \\ \vdots\\
+      \frac{a^{(n)}_{N,n}}{a^{(n)}_{n,n}} 
+    \end{pmatrix}$,
+      $L_n := 
+      \begin{pmatrix}
+        0  &   &  & &   \\
+        &  \ddots &  &\\
+        &  &  0 &  & & \\
+        &  &  l_{n+1} & 0 & & \\
+        &  &  \vdots & & \ddots & \\
+        &  &  l_{N} & &  & 0&
+      \end{pmatrix}$,
+      $L_-^{(n)} := E_N - L^{(n)}$
+    \item Berechne:  $A^{(n+1)} := L_-^{(n)}A^{(n)}$
+    \item Schluss: $R := A^{(N)}$,
+      $L = E_N + L^{(1)} + \cdots + L^{(N)}$
+      , $P := P^{(N)}$
+  \end{enumerate}
+}
+
+\simplebox{Cholesky Zerlegung}{
+  Sei $A \in \mathbb{K}^{N\times N}$ hermitesch und
+  positiv definit, dann gibt es eine untere Dreiecksmatrix 
+  mit positiven Diagonalelementen und
+  \[
+    A = LL^*.
+  \]
+  Ansatz zur Berechnung:
+  \[
+    \begin{pmatrix}
+      a_{1,1}& a_{1,2} &\cdots & a_{1,N} \\
+      a_{2,1}& a_{2,2} &\cdots & a_{2,N} \\
+      \vdots & \vdots &        & \vdots \\
+      a_{N,1}& a_{N,2} &\cdots & a_{N,N} 
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      l_{1,1}&  & & \\
+      l_{2,1}& l_{2,2} &&\\
+      \vdots & \vdots &  \ddots      & \\
+      l_{N,1}& l_{N,2} &\cdots & l_{N,N} 
+    \end{pmatrix}
+    \cdot
+    \begin{pmatrix}
+      l_{1,1}&  \overline{l_{1,2}}& 
+      \cdots& \overline{l_{1,N}}\\
+            & l_{2,2} & \cdots&\overline{l_{2,N}}\\
+      &    &  \ddots      & \vdots\\
+      & &  & l_{N,N}
+    \end{pmatrix}
+  \]
+  Mit Rechenaufwand:
+  \[
+    \texttt{Rechenaufwand} = \frac{1}{6}N^3 + \mathcal{O}(N^2)
+  \]
+}
+\simplebox{Householder-Transformation} {
+  Die Householder-Transformation bzgl. eines Vektors 
+  $v \in \mathbb{K}^N$ ist: 
+  \[
+    P = E_n - \frac{2}{v^*v}vv^* \in \mathbb{K}^{N \times N}
+  \]
+  Die Householder-Transformation ist eine Spiegelung an 
+  der Ebene orthogonal zu $v$.\\
+  Für P gilt folgende Eigenschaften:
+  \begin{itemize}
+    \item $Pv = -v$
+    \item $Pw=w$ $\forall w\perp v$
+    \item P hermitesch, also $P^* = P$
+    \item P unitär, also $P^*P = E_N$
+  \end{itemize}
+}
+
+\simplebox{QR-Zerlegung}{
+  Sei $A \in \mathbb{K}^{M \times N}$ mit 
+  $M \geq N$ und $\texttt{rang}(A) = N$. Dann gibt es 
+  eine unitäre Matrix $Q \in \mathbb{K}^{M\times M}$
+  und eine obere Dreiecksmatrix $R \in \mathbb{K}^{M\times N}$
+  mit 
+  \[
+    A = QR
+  \]
+  Wegen $Q$ unitär kann das Gleichungssystem wie folgt gelöst werden: 
+  \[
+    Rx = Q^*b
+  \]
+  Algorithmus:\\
+  Im n-ten Schritt haben wir $A^{(n)}$ bestimmt und sei 
+  $a_n = A_n^{(n)}$ die n-te Spalte von $A^{(n)}$.
+  \begin{enumerate}
+    \item Berechne $v_n := \frac{a_n}{||a_n||_2} + \delta_ne_1$ 
+      mit $\delta_n := 
+      \begin{cases}
+        \frac{(a_n)_1}{|(a_n)_1|} &, (a_n)_1 \neq 0\\
+        1 &, \text{sonst}
+      \end{cases}
+      $
+    \item Berechne $\beta_n := \frac{2}{v^*v}$, $w_n := A^*v_n$
+    \item Berechne $P_n = E_N - \beta_n v_nv_n^* = 
+      \begin{pmatrix}
+        E_n & 0 \\
+        0  & P'_n
+      \end{pmatrix}
+      \implies 
+      P_nA^{(n)} = A^{(n)} - \beta_n v_nw_n^* =
+      \begin{pmatrix}
+        r_{n,n} & * \\
+        0  & A^{(n+1)}
+      \end{pmatrix}
+      $
+    \item  Schluss: $R := P_n\cdots P_1A$ und 
+      $Q := P_1\cdots P_n$
+  \end{enumerate}
+  Bemerkungen:
+  \begin{itemize}
+    \item QR-Zerlegung nicht eindeutig für $M \neq N$.
+    \item Die Konditionszahl von der QR Zerlegung 
+      ist gleich der von $A$, also 
+      $\texttt{cond}_2(A) = \texttt{cond}_2(RQ)= \texttt{cond}_2(R)$.
+    \item Also besser als bei der LR Zerlegung mit
+      $\texttt{cond}_2(A) \leq \texttt{cond}_2(L) \texttt{cond}_2(R)$,
+      wobei die Konditionszahlen von L und R viel höher als 
+      A sein können.
+    \item Auch besser als die Cholesky Zerlegung, da für die 
+      cholesky-Zerlegung gilt: 
+      $\texttt{cond}_2(A) \leq (\texttt{cond}_2(L'))^2 $.
+    \item QR-Zerlegung ist doppelt so aufwendig wie LR-Zerlegung
+      und viermal so aufwendig wie cholesky-Zerlegung.
+    \item Falls der Rang nicht voll ist kann wieder 
+      Vertauschungen von Spalten verwendet werden, um 
+      den Algorithmus trotzdem anwendenden zu können.
+    \item Der Algorithmus kann leicht abgewandelt werden 
+      dass die Pivoelemente immer ungleich Null sind.
+  \end{itemize}
+  \[
+    \texttt{Rechenaufwand} = MN^2 - \frac{1}{3} + \mathcal{O}(MN)
+  \]
+}
+
+\simplebox{Lineare Ausgleichsrechnung} {
+  Sei $Ax = b$ mit $A\in \mathbb{K}^{M \times N}$, 
+  $x \in\mathbb{K}^N$, $b \in\mathbb{K}^M$ und 
+  $M > N$. 
+  Dieses LGS ist allgemein nicht lösbar, 
+  deswegen brauchen wir einen neuen Lösungsbegriff:
+  \[
+    \inf_{x \in\mathbb{K}^N} ||Ax - b||_2
+  \]
+  Die Minimierer sind die Lösungen der Gaußschen 
+  Normalengleichung:
+  \[
+    A^*Ax = A^*b
+  \]
+  Also eine Alternative zu der QR-Zerlegung
+}
+\simplebox{Banachscher Fixpunktsatz} {
+  Sei $M$ vollständig bzg. einer Metrik $d$
+  und sei $\phi: M \to M$ eine Abbildung, 
+  sodass es ein $q > 1$ gibt mit
+  \[
+    \forall x,y \in M: d(\phi(x), \phi(y))
+    \leq q \cdot d(x, y) 
+\]
+  Dann gibt es {\bf genau ein} $\hat{x} \in M$ mit 
+  $\phi(\hat{x}) = \hat{x}$. Außerdem konvergiert für 
+  jedes $x^{(0)} \in M$ die Folge
+  \[
+    x^{(n+1)} := \phi(x^{(n)}), \forall n\in \mathbb{N}_0
+  \]
+  gegen $\hat{x}$ und für $n \ge 1$ gilt:
+
+  \begin{enumerate}[label=(\alph*)]
+    \item Monotonie: $d(x^{(n)}, \hat{x}) 
+      \leq q \cdot d(x^{(n-1)}, \hat{x})$
+    \item A-priori-Schranke: $d(x^{(n)}, \hat{x})
+      \leq \frac{q^n}{1-q} \cdot d(x^{(0)}, x^{(1)})$
+    \item A-posteriori-Schranke: $d(x^{(n)}, \hat{x})
+      \leq \frac{q}{1-q} \cdot d(x^{(n)}, x^{(n-1)})$
+  \end{enumerate}
+}
+\simplebox{Fixpunktsatz angewendet auf lineare Gleichungssysteme}{
+  Anwendung auf LGS $Ax = b$, zerlege in $A = M - N$.
+  Daraus erhalten wir
+  \[
+    Mx = Nx +b.
+  \]
+  dass kann nun als ein Fixpunktproblem geschrieben werden: 
+  \[
+    x = Tx + c 
+    \hspace{0.6cm} \text{mit}\hspace{0.3cm}  T = M^{-1}N 
+    \hspace{0.3cm} \text{und}\hspace{0.3cm} c = M^{-1}x
+  \]
+  also $\phi(x) = Tx + c$.\\
+  Dieses Problem konvergiert falls $||T||< 1$, für eine 
+  induzierte Matrixnorm.\\\\
+  Gesamtschrittverfahren(Jacobi-Verfahren): \\
+  Hier ist $M = D$, $N = L+R$, wobei $D$ Diagonalmatrix 
+  mit Einträgen ungleich Null, dann ist das wieder ein 
+  Fixpunktproblem mit:
+  \[ x = D^{-1}(b + (L+R)x)\]
+  oder konkret:
+  \[
+    x_n^{(k+1)} = \frac{1}{a_{n,n}}
+    (b_n - \sum_{\substack{m= 1 \\ m\neq n}}^{N} 
+    a_{n,n}\cdot x_m^{(k)}) 
+  \]
+  Einzelschrittverfahren(Gauß-Seidel-Verfahren):\\
+  Hier ist $M = D-L$ und $N = R$, daraus:
+  \[
+    x = (D-L)^{-1}(b-Rx)
+  \]
+  \[
+    \rightsquigarrow x^{(neu)} = (D-L)^{-1}(b-Rx^{(alt)})
+  \]
+  \[
+    \iff x^{(neu)} = D^{-1}(b+ Lx^{(neu)} - Rx^{alt})
+  \]
+  konkret:
+  \[
+    x_n^{k+1} = \frac{1}{a_{n,n}}(b_n - 
+    \sum_{k=0}^{n-1}a_{n,m}x_m^{k+1} - 
+    \sum_{k=n+1}^{N} a_{n,m} x_m^{k})
+  \]
+  Falls $A$ strikt diagonaldominant konvergieren 
+  beide Verfahren für jeden Startwert $x^{(0)}\in \mathbb{K}^N$
+}
+
+\simplebox{Konjugierte Gradienten}{
+  Sei $A \in \mathbb{K}^{N \times N}$ hermitesch und 
+  positiv definit. Das Verfahren berechnet die exakte 
+  Lösung wird aber oft vorher abgebrochen. \\
+  Algorithmus: 
+  \begin{enumerate}
+    \item Start: Wähle $x^{(0)} \in \mathbb{K}^N$ 
+      und setze $d^{(0)} := r^{(0)} = b - Ax^{(0)}$. 
+      Ist $d^{(0)} = 0$ kann abgebrochen werden.
+    \item Berechne: 
+      \[
+        \alpha_{k-1} := \frac{d^{(k-1)*} r^{(k-1)}}
+        {d^{(k-1)*} A d^{(k-1)}}, \hspace{0.5cm}
+        \beta_{k-1} := \frac{d^{(k-1)*} A r^{(k)}}
+      {d^{(k-1)*} A d^{(k-1)}}
+      \hspace{0.5cm}\text{und}\hspace{0.5cm}
+      r^{(k)} := b - Ax^{(k)}
+    \]
+  \item Berechne: 
+    \[
+      x^{(k)} := x^{(k-1)} + \alpha_{k-1}d^{(k-1)}
+      \hspace{0.5cm}\text{und}\hspace{0.5cm}
+      d^{(k)} := r^{(k)} + \beta_{k-1}d^{(k-1)}
+    \]
+  \item Schluss: $d^{(k)} = 0 \implies x^{(k)} = \hat{x}$ 
+    mit $A\hat{x} = b$
+  \end{enumerate}
+  Das Verfahren konvergiert nach genau $N$ schritten.\\
+  Konvergenzrate:
+  \[
+    ||x^{(k)} - \hat{x}||_2 \leq 2 \texttt{cond}(A)
+    \left(
+    \frac{\sqrt{\texttt{cond}(A)} -1}{\sqrt{\texttt{cond}(A)}+1}
+  \right)^k ||x^{0} -\hat{x}||_2
+  \]
+
+}
+
+\simplebox{Eigenwerteinschließung} {
+  Sei $A, \Delta A  \in \mathbb{K}^{N\times N}$, 
+  $||\cdot||$ eine induzierte Matrixnorm und
+  $\sigma(A) := \{\lambda \in \mathbb{C} : 
+  \lambda \text{ ist Eigenwert von A} \}$.
+  Dann gilt (Bauer-Fike):
+  \[
+    \min_{\lambda(A) \in \sigma(A)}|\lambda(A) - \mu(\Delta A)|
+    \leq \texttt{cond}(A) \cdot ||\Delta A||.
+  \]
+  Wenn A \textit{normal} ($A^*A = AA^*$)  ist, so gilt sogar
+  \[
+    \min_{\lambda(A) \in \sigma(A)}|\lambda(A) - \mu(\Delta A)|
+    \leq  ||\Delta A||_2.
+  \]
+  Gerschgorin:\\
+  Sei
+  \[
+    \mathcal{K}_n := \{\xi \in \mathbb{C}: 
+      |a_{n,n} - \xi|
+      \leq 
+      \sum_{\substack{m=1 \\ m\neq n}}^{N} |a_{n,m}|
+    \}
+    \hspace{0.5cm} \text{und} \hspace{0.5cm}
+    \mathcal{K}^{*}_n := \{\xi \in \mathbb{C}: 
+      |a_{n,n} - \xi|
+      \leq 
+      \sum_{\substack{m=1 \\ m\neq n}}^{N} |a_{m,n}|
+    \}.
+  \]
+  Dann ist 
+  \[
+    \sigma(A) \subset \left(\bigcup_{n=1}^N \mathcal{K}_n
+      \right) \cap  \left(\bigcup_{n=1}^N \mathcal{K}_n^*
+      \right).
+  \]
+  Wenn $\mathcal{N}_1 \dot\cup \mathcal{N}_2 =  \{1,2, \dots,N\}$
+  mit 
+  \[
+    \left(\bigcup_{n\in \mathcal{N}_1} \mathcal{K}_n
+      \right) \cap  \left(\bigcup_{n \in \mathcal{N}_2}^N 
+        \mathcal{K}_n^*
+      \right) = \emptyset.
+  \]
+  Dann enthalten $\bigcup_{n \in \mathcal{N}_i}$, $i= 1,2$
+  je genau $\#\mathcal{N}_i$ Eigenwerte.\\
+  Courant-Fischer:\\
+  Falls $A$ hermitesch mit Eigenwerten $\lambda_1 \geq 
+  \lambda_2 \geq \dots \geq \lambda_N$. Dann gilt 
+  für jeden Unterraum $\mathcal{L} \subset \mathbb{K}^N$
+  mit $\texttt{dim}(\mathcal{L}) = n$, dass
+  \[
+    \min_{0\neq x \in \mathcal{L}} \frac{x^*Ax}{x^*x} \leq \lambda_n
+    \hspace{0.5cm} \text{und} \hspace{0.5cm}
+    \max_{0\neq x \in \mathcal{L}} \frac{x^*Ax}{x^*x} \geq \lambda_{N-n+1}
+  \]
+  mit Gleichheit $\mathcal{L}= \{x_1, \dots, x_n\}$ bzw. 
+  $\mathcal{L}= \{x_{N-n+1}, \dots, x_N\}$, wobei 
+  $(x_m)_{m=1}^{N}$ Eigenvektoren einer Orthonormalbasis sind.
+}
+\simplebox{Courant-Fischer Folgerung} {
+  Sei $A, \Delta A  \in \mathbb{K}^{N\times N}$ 
+  hermitesch, dann
+  \[
+    \lambda_n(A) + \lambda_N(\Delta A) 
+    \leq \lambda_n(A + \Delta A) \leq 
+    \lambda_n(A) + \lambda_1(\Delta A), \forall 
+    n=1,\dots,N
+  \]
+  und insbesondere
+  \[
+    |\lambda_n(A+\Delta A) - \lambda_n(A)| 
+    \leq ||\Delta A||_2 \forall 
+    n=1,\dots,N
+  \]
+}
+\simplebox{Potenzmethode} {
+  \textit{Motivation}:
+  Sei $A \in \mathbb{K}^{N \times N}$ diagonalisierbar,
+  und $(v_n)_{n=1}^{N}$ eine Orthonormalbasis aus 
+  Eigenvektoren, so gilt für $x = \sum_{n=1}^{N} \xi_n v_n$, dass 
+  \[
+    A^kx = \sum_{n=1}^{N} \lambda_n^k \xi v_n.
+  \]
+  Also dominiert der betragsgrößte Eigenwert für große 
+  k.\\
+  Sei $|\lambda_1| > |\lambda_2| \geq \dots \geq |\lambda_n|$
+  die Eigenwerte von A, $0 \neq y \in \mathbb{C}^N$,
+  mit $A^*y = \overline{\lambda_1}y$ und sei 
+  $\tilde{z}^{(0)} \in \mathbb{C}^N$ mit 
+  $y^*\tilde{z}^{(0)} \neq 0$,
+  dann:
+  \[
+    z^{(k)} := \frac{A^k\tilde{z}^{(0)}}{||A^k\tilde{z}^{(0)}||},
+    \forall k \geq 0
+  \]
+  so gilt 
+  \[
+    {\lim\sup}_{k \to \infty} |||Az^{(k)}|| - |\lambda_1|| \leq 
+    \left(\frac{|\lambda_2|}{|\lambda_1|}\right)^k.
+  \]
+  Außerdem gibt es genau ein Eigenvektor von $\lambda_1$ mit 
+  $||v|| = 1$ und $\texttt{sgn}(y^*v) = \texttt{sgn}(y^*\tilde{z}^{(0)})$
+  und dann gilt:
+  \[
+    {\lim\sup}_{k \to \infty} ||z^{(k)} - \texttt{sgn}(\lambda_1)^kv|| \leq 
+    \left(\frac{|\lambda_2|}{|\lambda_1|}\right)^k.
+  \]
+  Algorithmus:
+  \begin{enumerate}
+    \item Start: Wähle $\tilde{z}^{(0)}$, sodass möglichst 
+      $y^*\tilde{z}^{(0)} \neq 0$
+    \item Berechne $z^{k} := 
+      \frac{\tilde{z}^{(k)}}{||\tilde{z}^{(k)}||}$
+    \item Berechne $\tilde{z}^{(k)} := Az^{(k-1)}$
+    \item Schluss Eigenwert: 
+      $|\lambda_1| \approx ||Az^{(k)}||$
+    \item Schluss Eigenvektor:
+      $\texttt{sgn}(\lambda_1)^kz^{(k)} \approx v$
+  \end{enumerate}
+}
+\dfn{Lokale Konvergenz} {
+  Ein Iterationsverfahren $x_{k+1} = \phi(x_k)$, mit 
+  $\phi(\hat{x}) = \hat{x}$
+  heißt \textit{lokal Konvergent}
+    gegen $\hat{x}\in \mathbb{K}$, falls es eine offene 
+    Menge $U \subset \mathcal{D}(\phi)$ mit $\hat{x}\in U$
+    gibt, sodass für jedes $x^{(0)} \in U$ das Iterationsverfahren
+    definiert ist und gegen $\hat{x}$ konvergiert.
+}
+\dfn{Konvergenz Ordnung} {
+  Ein lokal gegen $\hat{x}$ konvergentes Iterationsverfahren
+  heißt konvergent \textit{von der Ordnung} $p \geq 1$,
+  falls es ein $\rho > 0$ und $C < \infty$ (mit $C < 1$ für $p=1$)
+  gibt mit:
+  \[
+    ||x_{k+1} - \hat{x}|| \leq C ||x_k - \hat{x}||^p, 
+    \hspace{0.2cm}
+    \forall k \geq 0 \hspace{0.2cm} \text{ und }\hspace{0.2cm}
+    ||x_0 - \hat{x}|| < \rho
+  \]
+}
+\ex{}{
+  Das Gesamtschrittverfahren(Banach), Einzelschrittverfahren(Banach)
+  und CG-Verfahren konvergieren mit Ordnung 1.
+}
+\simplebox{Konvergenz von Iterationsverfahren}{
+    Falls $\phi: \mathcal{D}(\phi) \subset \mathbb{K}^N
+    \to \mathbb{K}^N$ stetig differenzierbar mit 
+    $\hat{x}$ im inneren von $\mathcal{D}(\phi)$ 
+    und es gibt eine Induzierte Matrixnorm mit 
+    $||\phi'(x)|| < 1$ so ist die Fixpunktiteration
+    lokal konvergent gegen $\hat{x}$ \\
+}
+\simplebox{Ordnung von Iterationsverfahren}{
+  Die Funktion $\phi: \mathcal{D}(\phi) \subset \mathbb{K}
+    \to \mathbb{K}$  sie p-mal stetig differenzierbar
+    mit $p \geq 2$ und habe einen Fixpunkt $\hat{x}$ im inneren
+    von $\mathcal{D}(\phi)$. Ist 
+    \[
+      \phi'(x)= \dots = \phi^{(p-1)} = 0
+    \]
+    so ist die Fixpunktiteration lokal konvergent gegen 
+    $\hat{x}$ mit Konvergenzordnung mindestens $p$.
+    Ist zusätzlich $\phi^{(p)}(\hat{x}) \neq 0$, ist 
+    die Ordnung genau $p$.
+}
+
+\simplebox{Newton-Verfahren}{
+  Die Funktion $f: \mathcal{D}(\phi) \subset \mathbb{R}
+  \to \mathbb{R}$ ist differenzierbar und sei 
+  $\hat{x} \in \mathbb{R}$ mit $f(\hat{x}) = 0$, dann heißt folgende 
+  Vorschrift \textit{Newton-Verfahren}:
+  \[
+    x_{k+1} := x_{k} - \frac{f(x_k)}{f'(x_k)}, \forall k\geq 0
+  \]
+  Falls $f \in C^3[a,b]$ und $\hat{x} \in (a,b)$ mit 
+  $f(\hat{x}) = 0, f'(\hat{x}) \neq0 $. Dann konvergiert 
+  das Newton-Verfahren lokal quadratisch, also $p = 2$, gegen 
+  $\hat{x}$.
+}
+
+\end{document}
