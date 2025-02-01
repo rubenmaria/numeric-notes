@@ -794,6 +794,28 @@
       \right)
       , n= 0,\dots, N
     \]
+  Sei nun $K_0, \dots, K_M \in \mathbb{N}$. Dann 
+  gibt es für alle $(y^{(k)}_m)_{
+  \substack{m=0,\dots,M \\ k=0,\dots, K_m - 1}}$ 
+  genau ein Polynom $p$ von\\ Grad 
+  $\geq N := \left( \sum_{m=0}^{M} K_m \right) - 1$
+  mit 
+  \[
+    p^{(k)}(x_m) = y^{(k)}_m, \hspace{0.4cm}
+    \text{für } m= 0,\dots, M, \hspace{0.2cm}
+    k = 0,\dots, k_m - 1.
+  \]
+  Falls $f \in C^{N+1}[a,b]$ und für jedes 
+  $x \in [a,b]$ gibt es ein 
+  $\xi \in \texttt{conv}(x, x_0, \dots, x_M)$
+  mit 
+  \[
+    f(x) - p(x) = \frac{f^{(N+1)}(\xi)}{(N+1)!} w(x)
+  \]
+  wobei
+  \[
+    w(x) := (x-x_0)^{K_0}\dots(x-x_M)^{K_M}.
+  \]
 }
 \dfn{Splines}{
   Sei $[a,b]$ Intervall und Knoten
@@ -814,6 +836,22 @@
   $S_L$ ist ein $(N+L)$-dimensionaler Vektoraum.
 }
 
+\dfn{$L_2$ Norm} {
+  $||f||_{L_2(a,b)} := \left(
+    \int_a^b |f(x)|^2 dx
+  \right)^{\frac{1}{2}}$
+}
+
+\dfn{Sobolevraum} {
+  Der Sobolevraum $H^1(a,b)$ besteht aus allen 
+  Funktionen $f: [a,b] \to \mathbb{K}$ für die 
+  es ein $c \in k$ und $g \in L^2(a,b)$ gibt 
+  mit 
+  \[
+    f(x) = c + \int_a^x g(t) dt \hspace{0.3cm}
+    \forall x\in[a,b]
+  \]
+}
 \simplebox{Lineare Splines}{
   Hutfunktionen:
   \[
@@ -839,6 +877,33 @@
         &\text{falls } x_{N-1} \leq x \leq x_N
     \end{cases}
   \]
+  Für alle $y_0, \dots, y_N \in \mathbb{K}$ 
+  ist 
+  \[
+    s = \sum_{n=0}^{N} y_n\Lambda_n
+  \]
+  der eindeutig bestimmte lineare Spline mit
+  \[
+    s(x_n) = y_n, n=0, \dots, N
+  \]
+  Intuition: $\Lambda_n(x_m) = \delta_{n,m}, n,m = 0,\dots, N$\\
+  Sei nun $f \in C^2[a,b]$, dann gilt:
+  \[
+    \max_{x\in[a,b]} |s(x)- f(x)| \leq \frac{h^2}{8}
+    \max_{\xi \in [a,b]}|f''(\xi)|
+  \]
+  Sei nun $f \in H^1(a,b)$, dann gilt
+  \[
+    ||s-f||_{L_2(a,b)} \leq \frac{h}{\pi}||f'||_{L_2(a,b)}
+  \]
+  und für $f \in H^2_(a,b)$
+  \[
+    ||s-f||_{L_2(a,b)} \leq \frac{h^2}{\pi^2}||f''||_{L_2(a,b)}
+    \hspace{0.3cm} \text{und} \hspace{0.3cm}
+    ||s'-f'||_{L_2(a,b)} \leq \frac{h}{\pi}||f''||_{L_2(a,b)}
+  \]
+  Hierbei wird die optimale konstante saturiert durch
+  \[f(x) = \sin \frac{\pi(x-a)}{b-a}.\]
 }
 
 \simplebox{Trigonomentrische Interpolation} {
@@ -850,7 +915,7 @@
   \[
     \theta_n = \frac{2\pi n}{N}
   \]
-
+  
   
 
 
