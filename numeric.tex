@@ -1088,4 +1088,70 @@
   mit $c_s := 2 \sum^{\infty}_{l=1} (2l-1)^{-2s}$
 }
 
+\dfn{Maximierende Alternante} {
+  Sei $g \in C[a,b]$ reel. Eine maximierende 
+  Alternante der Länge M ist eine Folge 
+  $a \leq x_0 < \dots < x_{M-1} \leq b$ 
+  mit $|g(x_m)| = ||g||_\infty$ für $m = 0,\dots,M-1$
+  und 
+  \[
+    g(x_m) = -g(x_{m-1}) \text{ für } m= 0,\dots,M-1
+  \]
+}
+
+\simplebox{Tschebyscheff Polynome} {
+  Erster Art:\\
+  Für $n \in \mathbb{N}_0$ und 
+  $x \in [-1,1]$, sei
+  \[
+    T_N(x) := \cos(N \arccos(x))
+  \]
+  $T_N$ ist Polynom von Grad $N$ und es gilt:
+  \[
+    T_0(x) = 1, \hspace{0.2cm} T_1(x) = x
+  \]
+  und für $N \geq 1$
+  \[
+    T_{N+1}(x) = 2xT_N(x) - T_{N-1}(x).
+  \]
+  Der Koeffizient des führenden Terms von $T_N$ 
+  gleich $2^{N-1}$.
+}
+
+\simplebox{Approximationstheorie}{
+  Sei $f \in C[a,b]$, dann können wir $f$ beliebig gut 
+  mit den Bernsteinpolynomen approximieren, mit langsamer 
+  Konvergenzgeschwindigkeit.
+  \[
+    (B_Nf)(x) := \sum_{n=0}^N f\left(\frac{n}{N}\right)
+    {N \choose n} x^n(1-x)^{(N-n)}
+  \]
+  Das Problem der Bestapproximation kann wie folgt ausgedrückt werden:\\
+  Sei $X$ ein normierter $\mathbb{K}$-Vektorraum, $x \in X$ 
+  und $V \subset X$
+  \[
+    \inf_{v\in V} ||v-x|| =: E_x(V)
+  \]
+  Tscherbyschof Alternanten Sattz:\\
+  Sei $-\infty < a < b < \infty$, $n \in \mathbb{N}_0$,
+  $f \in C[a,b]$ reel und sei $p \in \mathcal{P}_N$ reel
+  mit $f \neq p$. Dann sind äquivalent:
+  \begin{itemize}
+    \item $p$ ist eine Bestapproximation in $\mathcal{P}_N$
+      an $f$ bzgl. $||\cdot||_\infty$.
+    \item $p-f$ besitzt eine Maximierende Alternante 
+      der Länge $N+2$
+  \end{itemize}
+  Insbesonder ist die Bestapproximation in diesem Setting eindeutig.\\
+  Die Bestapproximation im Intervall $[-1,1]$ von $x^{N+1}$ bzgl. 
+  der $||\cdot||_{\infty}$ ist:
+  \[
+    p_*(x) = \frac{1}{2^{N}}T_{N+1}(x)
+  \]
+  und es folgt:
+  \[
+    E_{x^{N+1}}(\mathcal{P}_N) = \min_{p \in \mathcal{P}_N}
+    \max_{x\in[-1,1]} |x^{N+1} - p(x)| = \frac{1}{2^N}
+  \]
+}
 \end{document}
