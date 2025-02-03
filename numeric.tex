@@ -851,6 +851,28 @@
     f(x) = c + \int_a^x g(t) dt \hspace{0.3cm}
     \forall x\in[a,b]
   \]
+  Periodischer Sobolevraum:\\
+  \[
+    H^1_{\texttt{per}} := \{
+      f \in H^1(0, 2\pi) : f(0) = f(2\pi)
+  \}
+  \]
+  Für beliebige $s > 0$ kann dieser Charakterisiert werden 
+  durch: 
+  \[
+    H^s_\texttt{per}(0,2\pi) = \left\{
+      f \in L^2(0,2\pi) : \sum_{k\in \mathbb{Z}}
+      \left(|k|^{2s} + 1\right)|\hat{f}_k|^2 < \infty
+    \right\}
+  \]
+  Mit Norm: 
+  \[
+    ||f||_{H^s_\texttt{per}(0,2\pi)} := 
+    \left(
+      2\pi \sum_{k\in \mathbb{Z}}(|k|^{2s} + 1)
+      |\hat{f}_k|^2
+    \right)^{\frac{1}{2}}
+  \]
 }
 \simplebox{Lineare Splines}{
   Hutfunktionen:
@@ -906,6 +928,123 @@
   \[f(x) = \sin \frac{\pi(x-a)}{b-a}.\]
 }
 
+\simplebox{Kubische Splines}{
+  Brachte Polynome Grad $\leq 3$  zwischen den 
+  Knoten. Sei $x_0, \dots, x_N$ und $y_0, \dots, y_N$
+  dann 
+  \[
+    s(x_n) = y_n, \forall n= 1,\dots,N
+  \]
+  Wir haben nicht genug Informationen, 
+  da $S_3$ Dimension $N+3$ und wir haben 
+  nur $N+1$ Werte.\\
+  Setze:
+  \[
+    s_n := s(x_n)
+    \hspace{0.5cm}
+    s'_n := s'(x_n)
+    \hspace{0.5cm}
+    \gamma_n := s''(x_n)
+    \hspace{0.5cm}
+    n= 0, \dots,N
+  \]
+  Daraus ergibt sich folgendes Gleichungssystem:
+  \begin{center}
+  \includegraphics[scale=0.3]{cubic-splines.png}
+  \end{center}
+  Die obigen Matrizen haben die Dimension 
+  $(n-1)\times(n+1)$, also nicht invertierbar.
+  Aber mit den Randbedingungen:
+  \begin{itemize}
+    \item $s''(a)=s''(b) = 0$ \textit{natürliche Splines}
+    \item $s'(a) = y'_0$ und $s'(b) = y'_N$ \textit{vollständige kubische Splines}
+  \end{itemize}
+  Mit der jeweiligen Bedingung sind obigen Matrizen 
+  Regulär, also können die Polynome des Splines 
+  bestimmt werden.
+  Außerdem ist obiges LGS gut konditioniert:
+  \[
+    \texttt{cond}_2(\dots) \leq 3 \frac{\max h_n}{\min h_n}
+  \]
+  für äquidistante Knoten folgt
+  \[
+    \texttt{cond}_2(\dots) \leq 3
+  \]
+  Falls $f \in C^4[a,b]$ dann ist bzgl Maximumsnorm: 
+  \[
+    \max_{x \in [a,b]} |s(x) - f(x)| \leq \frac{5}{386}h^4 
+    \max_{\xi \in [a,b]} |f^{(4)}(\xi)|
+  \]
+  Falls $f \in H^4(a,b)$ dann ist bzgl $L_2$-Norm:
+  \[
+    ||s-f||_{L_2(a,b)} \leq \frac{h^4}{\pi^4}||f^{(4)}||_{L_2(a,b)},
+    \hspace{0.2cm}
+    ||s'-f'||_{L_2(a,b)} \leq \frac{h^3}{\pi^3}||f^{(4)}||_{L_2(a,b)},
+    \hspace{0.2cm}
+    ||s''-f''||_{L_2(a,b)} \leq
+    \frac{h^2}{\pi^2}||f^{(4)}||_{L_2(a,b)}
+  \]
+}
+
+\simplebox{Fouriertransformation}{
+  Fouriertransformation:\\\\
+  Für $f \in L^1(0,2\pi)$ heißen die Zahlen
+  \[
+    \hat{f}_k := \frac{1}{2\pi}\int_0^{2\pi}e^{-ik\theta}
+    f(\theta)d\theta
+  \]
+  die Fourierkoeffizienten von $f$ und die Abbildung 
+  $f \mapsto (\hat{f})_{k\in \mathbb{Z}}$
+  heißt Fouriertransformation.\\
+  Sei nun $\mathcal{F}_N: \mathbb{C} \to \mathbb{C}$
+  die diskrete Fouriertransformation. Für einen 
+  Vektor $f = (f_0, \dots, f_{N-1})^T \in \mathbb{C}$
+  bezeichnet $\mathcal{F}f = ((\mathcal{F}_Nf)_0, \dots,
+  (\mathcal{F}_Nf)_{N-1})^T \in \mathbb{C}$  Vektor mit 
+  Komponenten:
+  \[
+    (\mathcal{F}_Nf)_k := \frac{1}{N}\sum_{n=0}^{N-1}f_ne^{-2\pi i \frac{kn}{N}}
+    , k = 0, \dots, N- 1.
+  \]
+  Schnelle Fouriertransformation:\\\\
+  Sei $N = 2M$ gerade, $\omega_N := e^{\frac{2\pi i}{N}}$
+  ,$\omega_M := w^2_N = e^{\frac{2\pi i}{M}}$. Für 
+  $f = (f_0, \dots, f_{N-1})^T \in \mathbb{C}$ setze 
+  $f^{(+}), f^{(-)} \in \mathbb{C}$:
+  \[
+    f^{(+})_m := f_m + f_{m+M},
+    \hspace{0.2cm}
+    f^{(-)}_m := (f_m - f_{m+M})w_N^{-m},
+    \hspace{0.2cm}
+    \forall m = 0,\dots,M-1.
+  \]
+  Dann ist
+  \[
+    (\mathcal{F}_Nf)_{2m} = \frac{1}{2}(\mathcal{F}f^{(+)})_m
+    \hspace{0.2cm}
+    (\mathcal{F}_Nf)_{2m+1} = \frac{1}{2}(\mathcal{F}f^{(-)})_m
+    \hspace{0.2cm}
+    \forall m = 0,\dots,M-1.
+  \]
+  Sei $f \in L^2(0,2\pi)$. Dann ist
+  \[
+    \sum_{k \in \mathbb{Z}} |\hat{f}|^2 = 
+    \frac{1}{2\pi} \int_0^{2\pi}
+    |f(\theta)|^2 d\theta < \infty
+  \]
+  und $\sum_{k=-K}^{K} \hat{f}_k e^{ik\theta}$
+  konvergiert für $K \to \infty$ in $L^2$ gegen f.\\\\
+  Sei andersherum $(\alpha_k)_{k \in \mathbb{Z}}$ eine Folge mit 
+  $\sum_{k \in \mathbb{Z}} |\alpha_k|^2 < \infty$. 
+  Dann konvergiert  $\sum_{k=-K}^{K} \alpha_k e^{ik\theta}$
+  für $K \to \infty$ in $L^2$ gegen eine Funktion f
+  und es gilt $\hat{f}_k = \alpha_k, \forall k$\\\\
+  Sei $f \in H^s_{\texttt{per}(0,2\pi)}$ mit $ s < \frac{1}{2}$
+  dann konvergiert die Fourierreihe von f 
+  ($\sum_{k=-K}^{K} \hat{f}_k e^{ik\theta}$)
+  gleichmäßig in $[0,2\pi]$ gegen $f$  und 
+  $f$ ist stetig.
+}
 \simplebox{Trigonomentrische Interpolation} {
   Sei O.B.d.A: $L= 2\pi$, $0 \leq \theta_0 < \theta_1 \dots 
     < \theta_{N-1} \leq L
@@ -915,10 +1054,38 @@
   \[
     \theta_n = \frac{2\pi n}{N}
   \]
-  
-  
-
-
+  Funktion aus: 
+  \[
+    \mathcal{T}_N := 
+    \left\{\sum_{-\frac{N}{2} +1 \leq k \leq \frac{N}{2}}
+      \alpha_ke^{ik\theta} : \alpha_k \in \mathbb{C},
+      \forall -\frac{N}{2}+1\leq k \leq \frac{N}{2}
+    \right\}
+  \]
+  Bei $N$ ungerade, gilt für die Indexmenge:
+  \[
+    -\frac{N-1}{2} \leq k \leq \frac{N-1}{2}
+  \]
+  $t \in T_N$ das das Interpolationsproblem löst 
+  ist gegeben durch:
+  \[
+    t(\theta) = \sum_{-\frac{N}{2} +1 \leq k \leq \frac{N}{2}}
+      \alpha_ke^{ik\theta}
+  \]
+  mit
+  \[
+    \alpha_k = \frac{1}{N}\sum_{n=0}^{N-1}y_ne^{ik\theta_n}, 
+    \forall-\frac{N}{2} +1 \leq k \leq \frac{N}{2}
+  \]
+  Fehlerabschätzung:\\
+  Sei $f \in H^s_\texttt{per}(0,2\pi)$ mit $s > \frac{1}{2}$
+  und $t_N \in \mathcal{T}_N$ das interpolierende trigonometrisches
+  Polynom. Dann gilt: 
+  \[
+    ||t_N-f||_{L^2(0,2\pi)} \leq 2^s 
+    \sqrt{1 + c_s } N^{-s}||f||_{H^s_\texttt{per}(0,2\pi)},
+  \]
+  mit $c_s := 2 \sum^{\infty}_{l=1} (2l-1)^{-2s}$
 }
 
 \end{document}
